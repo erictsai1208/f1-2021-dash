@@ -27,7 +27,7 @@ app.layout = html.Div(
         dbc.Col([
             'View driver information:',
             dcc.Dropdown(
-                id = 'driver-select',
+                id = 'driverinfo-select',
                 options = [driver for driver in drivers_df['Driver']],
                 value = 'Max Verstappen',
                 multi = False,
@@ -51,37 +51,63 @@ app.layout = html.Div(
         ], justify='center'),
         dbc.Row([
             dbc.Col([
-                'Select criteria to rank drivers by:',
+                'Rank by:',
                 dcc.Dropdown(
-                    id = "ranking-criteria",
+                    id = 'ranking-criteria',
                     options = ['Podiums', 'Points', 'World Championships'],
                     value = 'Podiums',
                     multi = False,
                     clearable = False)
-            ]),
+            ], width=1),
             dbc.Col([
                 html.Iframe(
                     id='ranking-plot',
                     style={'border-width': '0', 'width': '100%', 'height': '500px'})
-            ], width=10)
-        ]),
-        dbc.Row([
+            ]),
             dbc.Col([
-                dcc.Dropdown(
-                    options = laps_df['GP'].unique().tolist(),
-                    value = 'Bahrain Grand Prix',
-                    multi = False,
-                    clearable = False
-                )
-            ], width=3),
+                dbc.Row([
+                    dcc.Dropdown(
+                        id = 'gp-select',
+                        options = laps_df['GP'].unique().tolist(),
+                        value = 'Bahrain Grand Prix',
+                        multi = False,
+                        clearable = False)
+                ]),
+                dbc.Row([
+                    dcc.Checklist(
+                        id = 'driver-select',
+                        options = laps_df['name'].unique().tolist(),
+                        value=['Max Verstappen', 'Lance Stroll', 'Lando Norris'],
+                        labelStyle={'display': 'block'})
+                        # style={"height":200, "width":200, "overflow":"auto"})
+                ])
+            ], width=2),
             dbc.Col([
-                dcc.Checklist(
-                    options = drivers_df['Driver'].tolist(),
-                    value=['Max Verstappen'],
-                    labelStyle={'display': 'block'},
-                    style={"height":200, "width":200, "overflow":"auto"})
+                html.Iframe(
+                    id='laptime-boxplot',
+                    style={'border-width': '0', 'width': '100%', 'height': '500px'})
             ])
-        ])
+        ]),
+
+        # dbc.Row([
+        #     dbc.Col([
+        #         dcc.Dropdown(
+        #             id = 'gp-select',
+        #             options = laps_df['GP'].unique().tolist(),
+        #             value = 'Bahrain Grand Prix',
+        #             multi = False,
+        #             clearable = False
+        #         )
+        #     ], width=3),
+        #     dbc.Col([
+        #         dcc.Checklist(
+        #             id = 'driver-select',
+        #             options = drivers_df['Driver'].tolist(),
+        #             value=['Max Verstappen'],
+        #             labelStyle={'display': 'block'},
+        #             style={"height":200, "width":200, "overflow":"auto"})
+        #     ])
+        # ])
     ])
 )
 
@@ -89,19 +115,19 @@ app.layout = html.Div(
 @app.callback(
     Output('table', 'columns'),
     Output('table', 'data'),
-    Input('driver-select', 'value')
+    Input('driverinfo-select', 'value')
 )
-def render_driver_table(driver_select):
-    df = drivers_df.query("Driver == @driver_select")
+def render_driver_table(driverinfo_select):
+    df = drivers_df.query("Driver == @driverinfo_select")
     df = df[table_cols]
     return [{'name': col, 'id': col} for col in df.columns], df.to_dict('records')
 
 @app.callback(
     Output('image', 'src'),
-    Input('driver-select', 'value')
+    Input('driverinfo-select', 'value')
 )
-def display_image(driver_select):
-    img_path = IMG_DIR + driver_select+ ".png"
+def display_image(driverinfo_select):
+    img_path = IMG_DIR + driverinfo_select+ ".png"
     print(img_path)
     return img_path
 
@@ -109,14 +135,28 @@ def display_image(driver_select):
     Output('ranking-plot', 'srcDoc'),
     Input('ranking-criteria', 'value')
 )
-def plot_altair(ranking):
-    # if ranking == 'World Championships':
-    #     df = drivers_df.sort_values(ranking, ascending=False).head(5)
-    # else:
-    #     df = df = drivers_df.sort_values(ranking, ascending=False).head(7)
+def plot_ranking(ranking):
     chart = alt.Chart(drivers_df).mark_bar().encode(
-        x=ranking,
-        y=alt.Y('Driver', sort="-x")
+        x = ranking,
+        y = alt.Y('Driver', sort="-x")
+    )
+    return chart.to_html()
+
+
+@app.callback(
+    Output('laptime-boxplot', 'srcDoc'),
+    Input('driver-select', 'value'),
+    Input('gp-select', 'value')
+)
+def plot_laptime_boxplot(driver_select, gp_select):
+    df = laps_df.query("GP == @gp_select")
+    df = df.query("name in @driver_select")
+    chart = alt.Chart(df).mark_boxplot(size=30).encode(
+        y = alt.Y("lap_time_ms", title='Laptime', scale=alt.Scale(zero=False)),
+        x = alt.X("name", title='Driver', axis=alt.Axis(labelAngle=-45)),
+        color = alt.Color("name", legend=None)
+    ).properties(
+        width=400
     )
     return chart.to_html()
 
