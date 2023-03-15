@@ -2,6 +2,7 @@ from dash import dash, html, dcc, Input, Output, dash_table
 import dash_bootstrap_components as dbc
 import altair as alt
 import pandas as pd
+import gunicorn
 
 
 IMG_DIR = "assets/img/drivers/"
@@ -21,6 +22,7 @@ table_cols = [
 ]
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX])
+server = app.server
 
 app.layout = html.Div([
     dbc.Row([
@@ -139,4 +141,3 @@ def plot_laptime_boxplot(driver_select, gp_select):
 if __name__ == '__main__':
     app.run_server(debug=True)
 
-server = app.server
