@@ -138,3 +138,5 @@ def plot_laptime_boxplot(driver_select, gp_select):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
+server = app.server
