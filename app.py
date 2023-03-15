@@ -2,7 +2,6 @@ from dash import dash, html, dcc, Input, Output, dash_table
 import dash_bootstrap_components as dbc
 import altair as alt
 import pandas as pd
-import gunicorn
 
 
 IMG_DIR = "assets/img/drivers/"
