@@ -20,9 +20,12 @@ table_cols = [
     'Place of Birth'
 ]
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX])
 
-app.layout = html.Div(
+app.layout = html.Div([
+    dbc.Row([
+        html.H1("2021 Formula 1 Statistics", style={"text-align": "center"}),
+    ]),
     dbc.Row([
         dbc.Col([
             'View driver information:',
@@ -83,7 +86,7 @@ app.layout = html.Div(
             ])
         ]),
     ])
-)
+])
 
 
 @app.callback(
