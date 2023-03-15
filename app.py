@@ -112,7 +112,7 @@ def display_image(driverinfo_select):
     Input('ranking-criteria', 'value')
 )
 def plot_ranking(ranking):
-    chart = alt.Chart(drivers_df).mark_bar().encode(
+    chart = alt.Chart(drivers_df, title="Ranking by number of " + ranking).mark_bar().encode(
         x = ranking,
         y = alt.Y('Driver', sort="-x")
     )
@@ -127,7 +127,7 @@ def plot_ranking(ranking):
 def plot_laptime_boxplot(driver_select, gp_select):
     df = laps_df.query("GP == @gp_select")
     df = df.query("name in @driver_select")
-    chart = alt.Chart(df).mark_boxplot(size=30).encode(
+    chart = alt.Chart(df, title="Laptime distribution of each driver").mark_boxplot(size=30).encode(
         y = alt.Y("lap_time_ms", title='Laptime', scale=alt.Scale(zero=False)),
         x = alt.X("name", title='Driver', axis=alt.Axis(labelAngle=-45)),
         color = alt.Color("name", legend=None)
