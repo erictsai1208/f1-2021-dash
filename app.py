@@ -4,7 +4,7 @@ import altair as alt
 import pandas as pd
 
 
-IMG_DIR = "\\img\\drivers\\"
+IMG_DIR = "assets/img/drivers/"
 drivers_df = pd.read_csv("data/formula1_2021season_drivers.csv")
 laps_df = pd.read_csv("data/2021_all_laps_info.csv")
 table_cols = [
@@ -38,11 +38,6 @@ app.layout = html.Div(
                 html.Img(id = 'image')
             ]),
             dbc.Col([
-                # dash_table.DataTable(
-                #     id = 'table',
-                #     columns = [{'name': col, 'id': col} for col in table_cols],
-                #     data = drivers_df[table_cols].to_dict('records')
-                # )
                 dash_table.DataTable(
                     id = 'table',
                     data = []
@@ -79,7 +74,6 @@ app.layout = html.Div(
                         options = laps_df['name'].unique().tolist(),
                         value=['Max Verstappen', 'Lance Stroll', 'Lando Norris'],
                         labelStyle={'display': 'block'})
-                        # style={"height":200, "width":200, "overflow":"auto"})
                 ])
             ], width=2),
             dbc.Col([
@@ -88,26 +82,6 @@ app.layout = html.Div(
                     style={'border-width': '0', 'width': '100%', 'height': '500px'})
             ])
         ]),
-
-        # dbc.Row([
-        #     dbc.Col([
-        #         dcc.Dropdown(
-        #             id = 'gp-select',
-        #             options = laps_df['GP'].unique().tolist(),
-        #             value = 'Bahrain Grand Prix',
-        #             multi = False,
-        #             clearable = False
-        #         )
-        #     ], width=3),
-        #     dbc.Col([
-        #         dcc.Checklist(
-        #             id = 'driver-select',
-        #             options = drivers_df['Driver'].tolist(),
-        #             value=['Max Verstappen'],
-        #             labelStyle={'display': 'block'},
-        #             style={"height":200, "width":200, "overflow":"auto"})
-        #     ])
-        # ])
     ])
 )
 
@@ -128,7 +102,6 @@ def render_driver_table(driverinfo_select):
 )
 def display_image(driverinfo_select):
     img_path = IMG_DIR + driverinfo_select+ ".png"
-    print(img_path)
     return img_path
 
 @app.callback(
