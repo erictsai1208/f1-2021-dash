@@ -17,6 +17,10 @@ There are 3 main plots that the user can interact with. On the top, the user can
 
 Contributions are always welcome. See the [contributing guidelines](https://github.com/erictsai1208/f1-2021-dash/blob/main/CONTRIBUTING.md) for more information. Please note that the repository contains a [code of conduct](https://github.com/erictsai1208/f1-2021-dash/blob/main/CODE_OF_CONDUCT.md) file and that contributors should abide by the things outlined there.
 
+## License
+
+f1-2021-dash was created by Eric Tsai. It is licensed under the terms of the MIT license.
+
 ## Reference
 
 The datasets used in this app are from [Formula 1 World Championship (1950 - 2022)](https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020?select=lap_times.csv) on Kaggle and from [Formula 1 Datasets](https://github.com/toUpperCase78/formula1-datasets) on Github.
